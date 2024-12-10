@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OkElon</title>
+</head>
+<body>
+
+    <header class="header">
+        <h1 class="title">OkElon</h1>
+    </header>
+    
+    <div class="container">
+        <div class="job-offer-wrapper">
+            <span class="textarea-title">Job offer description</span>
+            <textarea id="jobOffer" placeholder="Enter job description here..."></textarea>
+        </div>
+        <div class="match-container">
+            <div id="heart" class="heart heart-empty">
+                <span id="heart-text" class="heart-text">  	&nbsp;0</span>
+            </div>
+            <div class="check-button" id="checkButton" >
+                check
+            </div>
+        </div>
+        <div class="resume-wrapper">
+            <span class="textarea-title">Resume description</span>
+            <textarea id="resume" placeholder="Enter resume here..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Simulate an AJAX request to get the heart status and the numbers
+        function getHeartStatus() {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    // Simulate a heart filled with numbers inside it
+                    resolve({ status: true, numbers: [25, 50] });  // Example: filled heart with numbers
+                }, 1000);
+            });
+        }
+
+        function updateHeart(number) {
+            const heartElement = document.getElementById('heart');
+            const heartTextElement = document.getElementById('heart-text');
+            
+            if (number > 55 ) {
+                heartElement.classList.remove('heart-empty');
+                heartElement.classList.add('heart-filled');
+                // heartElement.textContent = '❤️'; // Filled heart
+                heartTextElement.innerText = number; // Add numbers inside the heart
+                heartElement.appendChild(heartTextElement);
+            } else {
+                heartElement.classList.remove('heart-filled');
+                heartElement.classList.add('heart-empty');
+                // heartElement.textContent = '♡'; // Empty heart
+                heartTextElement.innerText = number; // Clear numbers
+                heartElement.appendChild(heartTextElement);
+            }
+                
+        }
+
+        document.getElementById("checkButton").addEventListener("click", () => {
+            const value1 = document.getElementById("jobOffer").value;
+            const value2 = document.getElementById("resume").value;
+
+            fetch("https://landa.wiki/upload", { // Replace with your endpoint
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    jobOffer: value1,
+                    resume: value2
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                data = JSON.parse(data)
+                console.log(data)
+                updateHeart(data.score);
+
+                console.log("Response received:", data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+<style>
+    
+    body {
+        display: grid;
+        place-items: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: url('./Purple-bfg.avif'); /* Very subtle background gradient */
+        background-size: cover;
+        background-attachment: fixed;
+        font-family: Helvetica;
+    }
+
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    }
+
+    textarea {
+        position: relative;
+        font-size: 24px;
+        padding: 10px;
+        width: 300px;
+        margin: 10px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        min-height: 100px;
+        resize: none;
+        height: 70vh; /* Set height to 85% of the viewport height */
+        z-index: 1;
+        background: unset;
+        color: white;
+        width: 94%;
+    }
+
+    .match-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .check-button{
+        padding: 10px 13px;
+        color: white;
+        background-color: #dd2e44;
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+        left: 4px;
+    }
+    .heart {
+        display: grid;
+        place-items: center;
+        width: 100px;
+        height: 120px;
+        position: relative;
+        left: 5px;
+        font-size: 90px;
+        margin: 0 20px;
+    }
+
+    .heart-filled {
+        color: #dd2e44;
+        background: url('filledHeart.svg') no-repeat;
+    }
+
+    .heart-empty {
+        background: url('outlinedHeart.svg') no-repeat;
+        color: #dd2e44;
+    }
+
+    .heart-text {
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        font-size: 32px;
+        letter-spacing: 2px;
+        color: black;
+        font-weight: bold;
+        z-index: 2;
+        text-align: center;
+        left: 31px;
+        top: 26px;
+        
+    }
+
+    .heart-filled .heart-text{
+        color: white;
+    }
+    .heart-empty .heart-text{
+        color: #dd2e44;
+    }
+    .job-offer-wrapper, .resume-wrapper{
+        min-width: 40vw;
+        display: flex;
+        flex-direction: column;
+    }
+    .textarea-title{
+        text-indent: 10px;
+        font-size: larger;
+        color: white;
+    }
+    .header {
+        width: 100%;
+        top: 0;
+        position: fixed;
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        height: 100px; /* Adjust height as needed */
+        background: #6C5B7B10; /* Muted purple header */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        /* background: linear-gradient(to bottom, #f8f8f8, #e8e8e8); Off-white gradient */
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        text-align: center; /* Center text within the header */
+        backdrop-filter: blur(15px);
+    }
+    .header::before { /* Subtle background element */
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: -50px;
+        width: 100%;
+        height: 200px;
+        background: radial-gradient(circle, rgba(153, 128, 250, 0.2), transparent); /* Lighter purple */
+        transform: rotate(20deg);
+        opacity: 0.7;
+        z-index: -3;
+    }
+    .header::after { /* Subtle background element */
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: -35%;
+        width: 100%;
+        height: 200px;
+        background: radial-gradient(circle, rgba(153, 128, 250, 0.2), transparent); /* Lighter purple */
+        transform: rotate(55deg);
+        opacity: 0.7;
+        z-index: -3;
+    }
+
+    .title {
+      font-size: 2em;
+      font-family: sans-serif;
+      color: #F9E79F; 
+      text-shadow:1px 1px 0 #888c, -1px -1px 0 #dddc ;
+
+
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+
+      background-image: linear-gradient(to bottom right, silver, #aaa); 
+    }
+
+    
+    @media (max-width: 768px) {
+        .title {
+            font-size: 1.5em;
+        }
+        .header {
+            height: 80px;
+        }
+    }
+    @media (max-width: 480px) {
+        .title {
+            font-size: 1.2em;
+        }
+    }
+
+    /* Media Query for Responsiveness */
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column; /* Stack the items vertically on smaller screens */
+            align-items: center;
+            justify-content: center;
+        }
+        body{
+            padding-top: 120px;
+        }
+        textarea {
+            width: 90%; /* Make the textareas take 90% of the width on small screens */
+            height: 70vh; /* Adjust the height for smaller screens */
+        }
+
+        .heart {
+        }
+    }
+</style>
+</html>
