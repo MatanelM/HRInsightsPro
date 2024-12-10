@@ -10,8 +10,19 @@
     <header class="header">
         <h1 class="title">OkElon</h1>
     </header>
-    
-    <div class="container">
+    <section class="hero">
+        <div class="hero-left">
+            <h1>Welcome to OkElon</h1>
+            <p>Revolutionize your hiring process with AI powered matching.</p>
+            <a href="#jobOffer" class="cta-button">Let's match!</a>
+        </div>
+        <div class="hero-right">
+
+            <img src="./heroImage.svg" alt="Hero Image">
+        </div>
+        
+    </section>
+    <section class="container">
         <div class="job-offer-wrapper">
             <span class="textarea-title">Job offer description</span>
             <textarea id="jobOffer" placeholder="Enter job description here..."></textarea>
@@ -28,35 +39,34 @@
             <span class="textarea-title">Resume description</span>
             <textarea id="resume" placeholder="Enter resume here..."></textarea>
         </div>
+    </section>
+
+    <div class="footer-section">
+        <h3>Contact</h3>
+        <p>Email: Matanelm12321@gmail.com</p>
     </div>
 
     <script>
-        // Simulate an AJAX request to get the heart status and the numbers
-        function getHeartStatus() {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    // Simulate a heart filled with numbers inside it
-                    resolve({ status: true, numbers: [25, 50] });  // Example: filled heart with numbers
-                }, 1000);
-            });
-        }
-
         function updateHeart(number) {
             const heartElement = document.getElementById('heart');
             const heartTextElement = document.getElementById('heart-text');
             
             if (number > 55 ) {
                 heartElement.classList.remove('heart-empty');
+                heartElement.classList.add('wiggle');
                 heartElement.classList.add('heart-filled');
-                // heartElement.textContent = '❤️'; // Filled heart
-                heartTextElement.innerText = number; // Add numbers inside the heart
+                heartTextElement.innerText = number; 
                 heartElement.appendChild(heartTextElement);
             } else {
                 heartElement.classList.remove('heart-filled');
                 heartElement.classList.add('heart-empty');
-                // heartElement.textContent = '♡'; // Empty heart
-                heartTextElement.innerText = number; // Clear numbers
+                heartElement.classList.remove('wiggle');
+                heartTextElement.innerText = number; 
                 heartElement.appendChild(heartTextElement);
+            }
+
+            if (number == 100 ){
+                heartTextElement.classList.add('score-100')
             }
                 
         }
@@ -64,8 +74,13 @@
         document.getElementById("checkButton").addEventListener("click", () => {
             const value1 = document.getElementById("jobOffer").value;
             const value2 = document.getElementById("resume").value;
+            const heartElement = document.getElementById('heart');
+            const heartTextElement = document.getElementById('heart-text');
 
-            fetch("https://landa.wiki/upload", { // Replace with your endpoint
+            heartElement.classList.remove('wiggle');
+            heartTextElement.innerText = ''; 
+            heartElement.classList.add('pound');
+            fetch("https://landa.wiki/upload", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -75,42 +90,120 @@
                     resume: value2
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                response.json();
+                heartElement.classList.remove('pound');
+            })
             .then(data => {
-                data = JSON.parse(data)
-                console.log(data)
+                data = JSON.parse(data);
                 updateHeart(data.score);
-
-                console.log("Response received:", data);
             })
             .catch(error => {
                 console.error("Error:", error);
+                alert('Oops, error happened. Lets try again...');
             });
         });
     </script>
 </body>
 <style>
+    html{
+        scroll-behavior: smooth;
+    }
     
     body {
-        display: grid;
-        place-items: center;
+        display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh;
         margin: 0;
-        background: url('./Purple-bfg.avif'); /* Very subtle background gradient */
+        background: url('./Purple-bfg.avif'); 
         background-size: cover;
         background-attachment: fixed;
         font-family: Helvetica;
+        scroll-behavior: smooth;
     }
 
+
+    /* Hero Section */
+    .hero {
+        display: flex;
+        flex-wrap: wrap; /* Allows responsive stacking */
+        height: 85vh;
+        align-items: center;
+        justify-content: center;
+        text-align: left;
+        color: #fff;
+        overflow: hidden;
+    }
+
+    .hero-left,
+    .hero-right {
+        flex: 1;
+        min-width: 300px; /* Prevents breaking layout on smaller screens */
+        padding: 20px;
+    }
+
+    .hero-right {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url('./heroImage.svg') no-repeat ;
+        background-size: contain;
+        height: 650px;
+        margin-left: 205px;
+        background-position: center;
+    }
+
+    .hero-right img {
+        max-width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        display: none; /* Only visible in mobile */
+    }
+
+    .hero-left {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: rgba(17, 25, 40, 0.75); /* Optional background for contrast */
+        text-align: center; /* Center-aligns content */
+        padding: 40px;
+        border-radius: 10px;
+        backdrop-filter: blur(16px) saturate(180%);
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .hero p {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 15px 30px;
+        font-size: 1rem;
+        color: #fff;
+        background-image: linear-gradient(to left, #B32785, #E12878); 
+        border-radius: 25px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+        background-image: linear-gradient(to left, #B32785, #E12878); 
+    }
     .container {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100vw;
-        flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+        flex-wrap: wrap; 
     }
 
     textarea {
@@ -123,7 +216,7 @@
         border-radius: 8px;
         min-height: 100px;
         resize: none;
-        height: 70vh; /* Set height to 85% of the viewport height */
+        height: 70vh; 
         z-index: 1;
         background: unset;
         color: white;
@@ -143,6 +236,7 @@
         cursor: pointer;
         position: relative;
         left: 4px;
+        font-weight: bold;
     }
     .heart {
         display: grid;
@@ -154,7 +248,9 @@
         font-size: 90px;
         margin: 0 20px;
     }
-
+    .score-100 {
+        left: 21px !important;
+    }
     .heart-filled {
         color: #dd2e44;
         background: url('filledHeart.svg') no-repeat;
@@ -201,17 +297,17 @@
         top: 0;
         position: fixed;
         display: flex;
-        justify-content: center; /* Center horizontally */
-        align-items: center; /* Center vertically */
-        height: 100px; /* Adjust height as needed */
-        background: #6C5B7B10; /* Muted purple header */
+        justify-content: center;
+        align-items: center;
+        height: 100px; 
+        background: #6C5B7B10; 
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-        /* background: linear-gradient(to bottom, #f8f8f8, #e8e8e8); Off-white gradient */
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-        text-align: center; /* Center text within the header */
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center; 
         backdrop-filter: blur(15px);
     }
-    .header::before { /* Subtle background element */
+
+    .header::before { 
         content: "";
         position: absolute;
         top: -20px;
@@ -223,7 +319,8 @@
         opacity: 0.7;
         z-index: -3;
     }
-    .header::after { /* Subtle background element */
+
+    .header::after { 
         content: "";
         position: absolute;
         top: -20px;
@@ -241,16 +338,112 @@
       font-family: sans-serif;
       color: #F9E79F; 
       text-shadow:1px 1px 0 #888c, -1px -1px 0 #dddc ;
-
-
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
-
       background-image: linear-gradient(to bottom right, silver, #aaa); 
     }
 
-    
+    .wiggle {
+      animation: wiggle 1s ease-in-out infinite;
+    }
+
+    /* Footer Styles */
+    .footer {
+        background-color: #333;
+        color: #fff;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .footer-section {
+        flex: 1;
+        min-width: 200px;
+        margin: 10px;
+    }
+
+    .footer-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #B32785;
+        text-align: center;
+    }
+
+    .footer-section p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #E12878;
+    }
+
+    .footer-section ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-section ul li {
+        margin: 5px 0;
+    }
+
+    .footer-section ul li a {
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-section ul li a:hover {
+        color: #ffb400;
+    }
+
+    .footer-bottom {
+        margin-top: 20px;
+        border-top: 1px solid #444;
+        padding-top: 10px;
+        font-size: 0.85rem;
+    }
+
+
+
+    @keyframes wiggle {
+      0%, 100% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(10deg);
+      }
+      50% {
+        transform: rotate(-10deg);
+      }
+      75% {
+        transform: rotate(10deg);
+      }
+    }
+    section{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .pound {
+      animation: pound 0.6s ease-in-out infinite;
+    }
+
+    @keyframes pound {
+      0%, 100% {
+        transform: scale(0.9); 
+      }
+      50% {
+        transform: scale(1.2); 
+      }
+    }
+
     @media (max-width: 768px) {
         .title {
             font-size: 1.5em;
@@ -268,20 +461,83 @@
     /* Media Query for Responsiveness */
     @media (max-width: 768px) {
         .container {
-            flex-direction: column; /* Stack the items vertically on smaller screens */
+            flex-direction: column; 
             align-items: center;
             justify-content: center;
+            
         }
         body{
             padding-top: 120px;
         }
         textarea {
-            width: 90%; /* Make the textareas take 90% of the width on small screens */
-            height: 70vh; /* Adjust the height for smaller screens */
+            width: 90%; 
+            height: 70vh; 
+        }
+        .hero {
+            flex-direction: column; /* Stacks content */
+            text-align: center;
+        }
+        .hero-left img {
+            display: block; /* Show image in mobile */
+        }
+        .hero-left{
+            margin: 20px;
         }
 
-        .heart {
+        .hero-right {
+            padding: 20px;
+            height: fit-content;
+            margin: auto;
+            
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+        }
+
+        .cta-button {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            
+        }
+        .footer-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-section {
+            text-align: center;
+            margin: 15px 0;
         }
     }
+
+
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 0.875rem;
+        }
+
+        .cta-button {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+        .footer-section h3 {
+            font-size: 1rem;
+        }
+
+        .footer-section p,
+        .footer-bottom p {
+            font-size: 0.8rem;
+        }
+    }
+
 </style>
 </html>
