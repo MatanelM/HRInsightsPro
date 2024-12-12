@@ -44,6 +44,14 @@
     </section>
 
     <div class="footer-section">
+        <div class="subscribe-container">
+            <h2 id="subscribeHeader">Want to get notified about AI tools?</h2>
+            <p id="subscribeParagraph">Subscribe now and never miss an update!</p>
+            <form id="subscribeForm">
+              <input id="email" type="email" name="email" placeholder="Enter your email" required>
+              <button id="subscribeButton" type="button" >Subscribe</button>
+            </form>
+          </div>
         <h3>Contact</h3>
         <p>Email: Matanelm12321@gmail.com</p>
     </div>
@@ -106,6 +114,35 @@
                     alert('Oops, error happened. Lets try again...');
                 });
         });
+
+        document.getElementById("subscribeButton").addEventListener("click", () => {
+            const value1 = document.getElementById("email").value;
+            
+            const h2 = document.getElementById('subscribeHeader');
+            const p = document.getElementById('subscribeParagraph');
+            const form = document.getElementById('subscribeForm');
+
+            fetch("https://landa.wiki/subscribe", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: value1
+                })
+            })
+                .then(data => {
+                    console.log(data)
+                    form.parentElement.removeChild(form);
+                    h2.innerText = "Thank you!"
+                    p.innerText = "You will get an email for the next update"
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert('Oops, error happened. Lets try again...');
+                });
+        });
+
     </script>
 </body>
 <style>
@@ -388,9 +425,11 @@
     }
 
     .footer-section {
-        flex: 1;
+        display: flex;
+        flex-direction:column;
         min-width: 200px;
         margin: 10px;
+        align-items: center;
     }
 
     .footer-section h3 {
@@ -462,6 +501,65 @@
     .pound {
         animation: pound 0.6s ease-in-out infinite;
     }
+
+
+    .subscribe-container {
+    width: 350px;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    color: white;
+    }
+
+    .subscribe-container h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    }
+
+    .subscribe-container p {
+    margin: 0 0 20px;
+    font-size: 14px;
+    }
+
+    form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+
+    form input {
+        width: 93.5%;
+        padding: 10px;
+        margin-bottom: 10px;
+        
+        border-radius: 8px;
+        border-color: #B32785;
+        outline: none;
+        font-size: 14px;
+        color: white;
+        background: unset;
+    
+    }
+
+    form input::placeholder {
+    }
+
+    form button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        background-image:linear-gradient(to left, #B32785, #E12878);
+    }
+
 
     @keyframes pound {
 
@@ -542,6 +640,7 @@
         .cta-button {
             padding: 10px 20px;
             font-size: 0.9rem;
+            
 
         }
 
